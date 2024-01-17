@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Include jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+    <title>Print Data</title>
+</head>
+
+<body>
+    <form id="dataForm">
+        <label for="micrCode">MICR Code</label>
+        <input type="text" id="micrCode" value="123456789">
+
+        <label for="ifscCode">IFSC Code</label>
+        <input type="text" id="ifscCode" value="123456789">
+
+        <label for="phoneNumber">Phone Number</label>
+        <input type="text" id="phoneNumber" value="123456789">
+
+        <label for="city">City</label>
+        <input type="text" id="city" value="Beldanga">
+
+        <label for="inputData1">Enter Name:</label>
+        <input type="text" id="inputData1" name="inputData1">
+
+        <label for="cifId">Enter CIF ID:</label>
+        <input type="text" id="cifId" name="cifId">
+
+        <label for="fatherName">Enter Father's Name:</label>
+        <input type="text" id="fatherName" name="fatherName">
+
+        <label for="jointAccountHolder">Enter Joint Account Holder Name:</label>
+        <input type="text" id="jointAccountHolder" name="jointAccountHolder">
+
+        <label for="fontSize">Font Size:</label>
+        <select id="fontSize" name="fontSize">
+            <option value="10">10</option>
+            <option value="12" selected>12</option>
+            <option value="14">14</option>
+            <option value="16">16</option>
+            <option value="18">18</option>
+        </select>
+
+        <button type="button" onclick="printData()">Print Data</button>
+    </form>
+
+    <script>
+        window.jsPDF = window.jspdf.jsPDF;
+
+        function printData() {
+            // Get the predefined values
+            var micrCode = document.getElementById("micrCode").value;
+            var ifscCode = document.getElementById("ifscCode").value;
+            var phoneNumber = document.getElementById("phoneNumber").value;
+            var city = document.getElementById("city").value;
+
+            // Get the input values
+            var inputData1 = document.getElementById("inputData1").value;
+            var cifId = document.getElementById("cifId").value;
+            var fatherName = document.getElementById("fatherName").value;
+            var jointAccountHolder = document.getElementById("jointAccountHolder").value;
+
+            // Get the selected font size
+            var fontSize = document.getElementById("fontSize").value;
+
+            // Check if data is entered
+            if (inputData1.trim() === "" || cifId.trim() === "") {
+                alert("Please enter data in both Name and CIF ID fields before printing.");
+                return;
+            }
+
+            // Create a new jsPDF instance
+            var pdf = new jsPDF();
+
+            // Set font size
+            pdf.setFontSize(parseInt(fontSize));
+
+            // Set margins (simulate margins with setLineWidth)
+            var margin = 10;
+            pdf.setLineWidth(margin);
+
+            // Set number of columns (optional)
+            var numColumns = 2;
+
+            // Calculate column width
+            var columnWidth = (pdf.internal.pageSize.width - margin * (numColumns + 1)) / numColumns;
+
+            // Add content to PDF
+            pdf.text(margin, margin, "MICR Code: " + micrCode);
+            pdf.text(margin, margin + 10, "IFSC Code: " + ifscCode);
+            pdf.text(margin, margin + 20, "Phone Number: " + phoneNumber);
+            pdf.text(margin, margin + 30, "City: " + city);
+
+            pdf.text(margin + columnWidth + margin, margin, "CIF ID: " + cifId);
+            pdf.text(margin + columnWidth + margin, margin + 10, "Father's Name: " + fatherName);
+            pdf.text(margin + columnWidth + margin, margin + 20, "Joint Account Holder: " + jointAccountHolder);
+
+            // Directly open print dialog
+            pdf.autoPrint();
+
+            // Save or open the PDF
+            pdf.save("printed_data.pdf");
+        }
+    </script>
+</body>
+
+</html>

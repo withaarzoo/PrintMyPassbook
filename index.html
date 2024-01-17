@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Include jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+
+    <title>Print Data</title>
+</head>
+
+<body>
+
+    <section class="container">
+        <header>Registration Form</header>
+        <form class="form" action="#">
+            <!-- predefined inputs -->
+            <div class="column">
+                <div class="input-box">
+                    <!-- <label>M/O Open</label> -->
+                    <input value="EITHER OR SURVIVOR" type="text" readonly hidden>
+                </div>
+            </div>
+
+
+            <div class="column">
+                <!-- user-defined inputs -->
+                <div class="input-box">
+                    <label>CIF ID</label>
+                    <input placeholder="Enter cif id" type="text" id="cifId">
+                </div>
+
+                <div class="input-box">
+                    <label>A/C No.</label>
+                    <input placeholder="Enter account number" type="number" id="accountNumber">
+                </div>
+            </div>
+
+
+
+            <div class="input-box">
+                <label>Full Name</label>
+                <input placeholder="Enter full name" type="text" id="fullName">
+            </div>
+
+            <div class="column">
+                <div class="input-box">
+                    <label>A/C Open Date</label>
+                    <input placeholder="Enter account open date" type="date" id="accountOpenDate">
+                </div>
+                <div class="input-box">
+                    <label>Aadhar NO XX1234</label>
+                    <input placeholder="Last four digit of aadhar number" type="number" id="aadharNumber">
+                </div>
+            </div>
+
+            <div class="input-box">
+                <label>M/O Open</label>
+                <div class="select-box">
+
+                    <select id="moOpen">
+                        <option hidden="">Select</option>
+                        <option>SELF</option>
+                        <option>JOINT</option>
+                    </select>
+                </div>
+            </div>
+        
+            <div class="column">
+                <div class="input-box">
+                    <label>SO</label>
+                    <input placeholder="Son of " type="text" id="SO">
+                </div>
+                <div class="input-box">
+                    <label>VILL</label>
+                    <input placeholder="Enter village" type="text" id="village">
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="input-box">
+                    <label>P.O</label>
+                    <input placeholder="Enter post office" type="text" id="postOffice">
+                </div>
+                <div class="input-box">
+                    <label>P.S</label>
+                    <input placeholder="Enter police station" type="text" id="policeStation">
+                </div>
+            </div>
+
+            <!-- current date -->
+            <div class="input-box">
+                <!-- <label>Current Date</label> -->
+                <input id="currentDate" value="" type="date" disabled hidden>
+            </div>
+            <br>
+
+            <div class="select-box">
+                <select id="fontSize">
+                    <option hidden="">Page Size</option>
+                    <option>10</option>
+                    <option>12</option>
+                    <option>14</option>
+                    <option>16</option>
+                    <option>18</option>
+                </select>
+            </div>
+
+            <button type="button" onclick="printData()">Submit</button>
+        </form>
+    </section>
+
+    <script>
+        window.jsPDF = window.jspdf.jsPDF;
+
+        function printData() {
+            // Get the predefined values
+            var desc1 = "Each depositor is insured by DICGC upto a maximum Rs.5.00lac"
+            var desc2 = "subject to change from time to time (T&C applicable)"
+            var bo = "BELDANGA";
+            var city = "BELDANGA, MURSHIDABAD-742133(Ph:03482-264062)";
+            var micrCode = "742024019";
+            var ifscCode = "PUNB0023020";
+            var tollfree = "*Toll Free-18001802222/18001032222.Tolled-01202490000,Email-care@pnb.co.in*";
+            var prinPhn = "*Principal Nodal Officer: Phn - 0124-4126244*";
+            var ckyc = "";
+            var dist = "MURSHIDABAD";
+
+            var mainCity = "BELDANGA";
+            var state = "WEST BENGAL";
+            var country = "INDIA";
+            var pin = "742133";
+            var nominationRegisterSerialNumber = "";
+
+            var separator = "";
+
+            // Get the input values
+            var cifId = document.getElementById("cifId").value;
+            var moOpen = document.getElementById("moOpen").value;
+            var accountNumber = document.getElementById("accountNumber").value;
+            var aadharNumber = document.getElementById("aadharNumber").value;
+            var fullName = document.getElementById("fullName").value;
+            var accountOpenDate = document.getElementById("accountOpenDate").value;
+            var So = document.getElementById("SO").value;
+            var Village = document.getElementById("village").value;
+            var postOffice = document.getElementById("postOffice").value;
+            var policeStation = document.getElementById("policeStation").value;
+
+            // Get the selected font size
+            var fontSize = document.getElementById("fontSize").value;
+
+            // Get the current date
+            var currentDate = new Date();
+            var formattedDate = currentDate.toISOString().split('T')[0];  // Format as YYYY-MM-DD
+
+            // Check if any user-defined input is empty
+            var userInputFields = ["cifId", "accountNumber", "fullName", "accountOpenDate", "SO", "village", "policeStation"];
+
+            for (var i = 0; i < userInputFields.length; i++) {
+                var inputField = document.getElementById(userInputFields[i]);
+                var userInput = inputField ? inputField.value : "";
+
+                if (userInput.trim() === "") {
+                    alert("Please enter all user-defined data before printing.");
+                    return;
+                }
+            }
+
+            // Create a new jsPDF instance
+            var pdf = new jsPDF();
+
+            // Set font size
+            pdf.setFontSize(parseInt(fontSize));
+
+            // Set margins (simulate margins with setLineWidth)
+            var margin = 10;
+            pdf.setLineWidth(margin);
+
+            // Set number of columns (optional)
+            var numColumns = 2;
+
+            // Calculate column width
+            // var columnWidth = (pdf.internal.pageSize.width - margin * (numColumns + 1)) / numColumns;
+
+            // Calculate column width with a smaller factor
+            var columnWidth = (pdf.internal.pageSize.width - margin * (numColumns + 1)) / (numColumns * 2);
+
+
+            // Add content to PDF
+            pdf.text(margin, margin, "" + desc1);
+            pdf.text(margin, margin + 5, "" + desc2);
+            // ------- separator
+            pdf.text(margin, margin + 20, "BO: " + bo);
+            pdf.text(margin, margin + 25, "" + city);
+            // ------- separator
+            pdf.text(margin, margin + 40, "MICR Code: " + micrCode + "     IFSC Code: " + ifscCode);
+            // pdf.text(margin + columnWidth + margin, margin + 30, "IFSC Code: " + ifscCode);
+            pdf.text(margin, margin + 45, "" + tollfree);
+            pdf.text(margin, margin + 50, "" + prinPhn);
+            pdf.text(margin, margin + 55, "CKYC: " + ckyc);
+            pdf.text(margin, margin + 60, "CIF Id:  " + cifId + "     M/O Open: " + moOpen);
+            // pdf.text(margin + columnWidth + margin, margin + 50, "M/O Open: " + moOpen);
+            pdf.text(margin, margin + 65, "A/C No: " + accountNumber + "     INR Aadhar: " + aadharNumber);
+            // pdf.text(margin + columnWidth + margin, margin + 55, "INR Aadhar: " + aadharNumber);
+            pdf.text(margin, margin + 70, "" + fullName);
+            pdf.text(margin, margin + 75, "Account Open Date: " + accountOpenDate);
+            pdf.text(margin, margin + 80, "S/O, " + So + "     VILL: " + Village);
+            // pdf.text(margin + columnWidth + margin, margin + 70, "VILL: " + Village);
+            pdf.text(margin, margin + 85, "P.O: " + postOffice + "     P.S: " + policeStation + "     DIST: " + dist);
+            // pdf.text(margin + columnWidth + margin, margin + 75, "P.S: " + policeStation + "     DIST: " + dist);
+            // pdf.text(margin, margin + 65, "DIST: " + dist);
+            // ------- separator
+            pdf.text(margin, margin + 95, "" + mainCity);
+            pdf.text(margin, margin + 100, "" + state + "     " + country + "      Pin: " + pin);
+            // pdf.text(margin + columnWidth + margin, margin + 85, "" + country + "      Pin: " + pin);
+            pdf.text(margin, margin + 105, "Nomination Register Sl.No:" + nominationRegisterSerialNumber);
+
+            pdf.text(margin, margin + 110, "Date of Issue: " + formattedDate);
+
+
+
+
+
+            // pdf.text(margin + columnWidth + margin, margin, "CIF ID: " + cifId);
+            // pdf.text(margin + columnWidth + margin, margin + 10, "A/C No. :" + accountNumber);
+            // pdf.text(margin + columnWidth + margin, margin + 20, "Name :" + fullName);
+            // pdf.text(margin + columnWidth + margin, margin + 30, "Account Open Date" + accountOpenDate);
+            // pdf.text(margin + columnWidth + margin, margin + 40, "Joint Holder: " + jointAccountHolder);
+            // pdf.text(margin + columnWidth + margin, margin + 50, "SO : " + So);
+            // pdf.text(margin + columnWidth + margin, margin + 60, "VILL PO :" + Village);
+            // pdf.text(margin + columnWidth + margin, margin + 70, "PS :" + policeStation);
+
+            // pdf.text(margin, margin + 80, "Account Open Date: " + formattedDate);
+
+            // Directly open print dialog
+            pdf.autoPrint();
+
+            // Save or open the PDF
+            pdf.save("printed_data.pdf");
+        }
+    </script>
+
+</body>
+
+</html>
