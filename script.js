@@ -1,7 +1,7 @@
 window.jsPDF = window.jspdf.jsPDF;
 
 function printData() {
-    // Get the predefined values
+    // Get the predefined values 
     var micrCode = document.getElementById("micrCode").value;
     var ifscCode = document.getElementById("ifscCode").value;
     var phoneNumber = document.getElementById("phoneNumber").value;
